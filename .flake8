@@ -4,6 +4,7 @@ max-complexity = 18
 select = B,C,E,F,W,T4,B9
 # source:
 # https://flake8.pycqa.org/en/latest/user/configuration.html
+# https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
 # it's not a bug that we aren't using all of hacking, ignore:
 # F812: list comprehension redefines ...
 # H101: Use TODO(NAME)
