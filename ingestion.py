@@ -44,7 +44,7 @@ assert os.path.exists(input_folder_path), f"{input_folder_path} does not exist"
 
 if not os.path.exists(output_folder_path):
     logger.info(f"{output_folder_path} does not exists, creating it.")
-    os.makedirs("output_folder_path")
+    os.makedirs(output_folder_path)
 
 
 def merge_multiple_dataframe() -> None:
@@ -65,7 +65,7 @@ def merge_multiple_dataframe() -> None:
         except FileNotFoundError:
             print(f"Coudn't read and append {file}")
 
-    logger.info("Droppig duplicated rows")
+    logger.info("Dropping duplicated rows")
     df = df.drop_duplicates()
 
     logger.info(
@@ -73,7 +73,7 @@ def merge_multiple_dataframe() -> None:
     )
 
     # path_to_write_csv =
-    df.to_csv(f"{os.getcwd()}/{output_folder_path}/finaldata.csv")
+    df.to_csv(f"{os.getcwd()}/{output_folder_path}/finaldata.csv", index=False)
 
     with open(
         f"{os.getcwd()}/{output_folder_path}/ingestedfiles.txt", "w"
