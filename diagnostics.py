@@ -31,7 +31,7 @@ logger = logging.getLogger("Diagnostics")
 
 def load_config() -> dict:
     """
-    Parse `config.json`.
+    Parse `config.json`. NEED TO BE REFACTORED
     Input:
         config.json read
     Output:
@@ -42,17 +42,7 @@ def load_config() -> dict:
 
         logger.info("Read config file")
 
-    dataset_csv_path = os.path.join(config["test_data_path"])
-    output_folder_path = os.path.join(config["output_folder_path"])
-    production_deployment_path = os.path.join(config["prod_deployment_path"])
-
-    config_dict = {
-        "dataset_csv_path": dataset_csv_path,
-        "production_deployment_path": production_deployment_path,
-        "output_folder_path": output_folder_path,
-    }
-
-    return config_dict
+    return config
 
 
 def load_data(path_to_data: str) -> Tuple[pd.DataFrame, list]:
@@ -71,7 +61,7 @@ def load_data(path_to_data: str) -> Tuple[pd.DataFrame, list]:
     return (x, y)
 
 
-def model_predictions(config_dict: dict) -> list:
+def model_predictions(path_to_data: str, path_to_model: str) -> list:
     """
     Reads the test dataset, the trained model and returns
     model's predictions for test dataset.
@@ -80,18 +70,11 @@ def model_predictions(config_dict: dict) -> list:
     Output:
         list of model predictions.
     """
-    path_to_model = os.path.join(
-        config_dict["production_deployment_path"], "trainedmodel.pkl"
-    )
 
     with open(path_to_model, "rb") as f:
         model = pickle.load(f)
 
     logger.info("Model loaded")
-
-    path_to_data = os.path.join(
-        config_dict["dataset_csv_path"], "testdata.csv"
-    )
 
     x_test, _ = load_data(path_to_data)
 
@@ -102,15 +85,11 @@ def model_predictions(config_dict: dict) -> list:
     return preds
 
 
-def dataframe_summary(config_dict: dict) -> pd.DataFrame:
+def dataframe_summary(path_to_data: str) -> pd.DataFrame:
     """
     Reads test dataset and compute summary statistics for
     numeric columns.
     """
-    path_to_data = os.path.join(
-        config_dict["dataset_csv_path"], "testdata.csv"
-    )
-
     x_test, _ = load_data(path_to_data)
 
     stats = x_test.select_dtypes(include="number").mean()
@@ -129,15 +108,11 @@ def dataframe_summary(config_dict: dict) -> pd.DataFrame:
     return stats
 
 
-def missing_pct(config_dict: dict) -> list:
+def missing_pct(path_to_data: str) -> list:
     """
     Compute the percentage of missing (null) values in
     a dataframe found in `config.json`'s output_folder_path attribute.
     """
-    path_to_data = os.path.join(
-        config_dict["output_folder_path"], "finaldata.csv"
-    )
-
     df = pd.read_csv(path_to_data)
     na_pct = df.isnull().sum() / len(df)
 
@@ -186,8 +161,13 @@ def outdated_packages_list() -> None:
 
 if __name__ == "__main__":
     cfg = load_config()
-    model_predictions(cfg)
-    dataframe_summary(cfg)
-    missing_pct(cfg)
+    model_predictions(
+        path_to_data=os.path.join(cfg["test_data_path"], "testdata.csv"),
+        path_to_model=os.path.join(
+            cfg["prod_deployment_path"], "trainedmodel.pkl"
+        ),
+    )
+    dataframe_summary(os.path.join(cfg["output_folder_path"], "finaldata.csv"))
+    missing_pct(os.path.join(cfg["output_folder_path"], "finaldata.csv"))
     execution_time()
     outdated_packages_list()
