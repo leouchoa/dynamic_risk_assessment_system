@@ -1,5 +1,11 @@
 """
-improve doc!
+This step executes:
+
+- Model Predictions
+- Summary Statistics computation on `config.json`'s `output_folder_path`
+- Missing Data percentage on `config.json`'s `output_folder_path`
+- Timing of training.py and ingestion.py
+- Check for outdated dependencies
 """
 import json
 import logging
