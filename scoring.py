@@ -26,7 +26,7 @@ logging.basicConfig(
     filemode="w",
 )
 
-logger = logging.getLogger("training")
+logger = logging.getLogger("Scoring")
 
 
 with open("config.json", "r") as f:
@@ -41,13 +41,14 @@ def load_data(test_data_path: str) -> Tuple[pd.DataFrame, list]:
     """
     Loads dataset, drop unused columns and return `x` dataframe and `y` labels.
     """
-    logger.info(f"Reading {test_data_path}")
     df = pd.read_csv(test_data_path)
+    logger.info(f"Read {test_data_path}")
 
-    logger.info("Preparing dataframe")
     df = df.drop("corporation", axis=1)
     y = df.exited.values
     x = df.drop("exited", axis=1)
+
+    logger.info("Prepared dataframe")
 
     return (x, y)
 
@@ -75,22 +76,23 @@ def score_model(
     """
     x, y = load_data_output
 
-    logger.info("Loading model")
-
     lr_mod = load_model(path_to_model)
 
-    logger.info("Making predictions")
+    logger.info("Loaded model")
 
     preds = lr_mod.predict(x)
 
-    logger.info("Compute f1 score")
+    logger.info("Made predictions")
+
     test_data_f1score = f1_score(y_true=y, y_pred=preds)
+    logger.info("Computed f1 score")
 
     f1score_saving_path = f"{path_to_model.split('/')[0]}/latestscore.txt"
 
-    logger.info("Saving f1 score")
     with open(f1score_saving_path, "w+") as f:
         f.write(f"f1_score = {str(test_data_f1score)}")
+
+    logger.info("Saved f1 score")
 
 
 if __name__ == "__main__":
