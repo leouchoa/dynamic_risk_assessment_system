@@ -24,7 +24,7 @@ logging.basicConfig(
     filemode="w",
 )
 
-logger = logging.getLogger("training")
+logger = logging.getLogger("Training")
 
 
 def load_and_prepare(config: json) -> Tuple[pd.DataFrame, array]:
@@ -36,13 +36,13 @@ def load_and_prepare(config: json) -> Tuple[pd.DataFrame, array]:
     dataset_csv_path = os.path.join(
         config["output_folder_path"], "finaldata.csv"
     )
-    logger.info("Reading finaldata.csv")
     df = pd.read_csv(dataset_csv_path)
+    logger.info("Read finaldata.csv")
 
-    logger.info("Dropping columns and creating x/y data")
     df = df.drop("corporation", axis=1)
     y = df.exited.values
     x = df.drop("exited", axis=1)
+    logger.info("Dropped columns and creating x/y data")
 
     return (x, y)
 
@@ -71,9 +71,9 @@ def train_model(train_x_y: Tuple[pd.DataFrame, array], config: json) -> None:
         verbose=0,
         warm_start=False,
     )
-
-    logger.info("Training model")
+    logger.info("Started training model")
     lr_mod.fit(x, y)
+    logger.info("Model trained")
 
     if not os.path.exists(config["output_model_path"]):
         os.makedirs(config["output_model_path"])
@@ -82,11 +82,9 @@ def train_model(train_x_y: Tuple[pd.DataFrame, array], config: json) -> None:
         config["output_model_path"], "trainedmodel.pkl"
     )
 
-    logger.info(f"Saving model into {model_output_path}")
-
     pickle.dump(lr_mod, open(model_output_path, "wb"))
 
-    logger.info("Saving succeded")
+    logger.info(f"Saved model into {model_output_path}")
 
 
 if __name__ == "__main__":
