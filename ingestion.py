@@ -32,9 +32,10 @@ logging.basicConfig(
 
 logger = logging.getLogger("ingestion")
 
-logger.info("Loading config specs")
 with open("config.json", "r") as f:
     config = json.load(f)
+
+logger.info("Loaded config specs")
 
 input_folder_path = config["input_folder_path"]
 output_folder_path = config["output_folder_path"]
@@ -57,20 +58,16 @@ def merge_multiple_dataframe() -> None:
     df_cols = pd.read_csv(file_paths[0], nrows=1).columns
     df = pd.DataFrame(columns=df_cols)
 
-    logger.info(f"Ingesting data frames from {input_folder_path}")
-
     for file in file_paths:
         try:
             df = df.append(pd.read_csv(file)).reset_index(drop=True)
         except FileNotFoundError:
             print(f"Coudn't read and append {file}")
 
-    logger.info("Dropping duplicated rows")
-    df = df.drop_duplicates()
+    logger.info(f"Ingested data frames from {input_folder_path}")
 
-    logger.info(
-        f"Saving finaldata.csv and ingestedfiles.txt into {output_folder_path}"
-    )
+    df = df.drop_duplicates()
+    logger.info("Dropped duplicated rows")
 
     # path_to_write_csv =
     df.to_csv(f"{os.getcwd()}/{output_folder_path}/finaldata.csv", index=False)
@@ -79,6 +76,10 @@ def merge_multiple_dataframe() -> None:
         f"{os.getcwd()}/{output_folder_path}/ingestedfiles.txt", "w"
     ) as f:
         f.write(",".join(file_names))
+
+    logger.info(
+        f"Saved finaldata.csv and ingestedfiles.txt into {output_folder_path}"
+    )
 
 
 if __name__ == "__main__":
