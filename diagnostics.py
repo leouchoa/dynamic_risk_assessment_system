@@ -61,7 +61,7 @@ def load_data(path_to_data: str) -> Tuple[pd.DataFrame, list]:
     return (x, y)
 
 
-def model_predictions(path_to_data: str, path_to_model: str) -> list:
+def model_predictions(x_y_tuple: str, path_to_model: str) -> list:
     """
     Reads the test dataset, the trained model and returns
     model's predictions for test dataset.
@@ -70,13 +70,12 @@ def model_predictions(path_to_data: str, path_to_model: str) -> list:
     Output:
         list of model predictions.
     """
+    x_test, _ = x_y_tuple
 
     with open(path_to_model, "rb") as f:
         model = pickle.load(f)
 
     logger.info("Model loaded")
-
-    x_test, _ = load_data(path_to_data)
 
     preds = model.predict(x_test)
 
@@ -161,8 +160,11 @@ def outdated_packages_list() -> None:
 
 if __name__ == "__main__":
     cfg = load_config()
+    x_y_tuple = load_data(
+        path_to_data=os.path.join(cfg["test_data_path"], "testdata.csv")
+    )
     model_predictions(
-        path_to_data=os.path.join(cfg["test_data_path"], "testdata.csv"),
+        x_y_tuple,
         path_to_model=os.path.join(
             cfg["prod_deployment_path"], "trainedmodel.pkl"
         ),
