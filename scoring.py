@@ -94,6 +94,8 @@ def score_model(
 
     logger.info("Saved f1 score")
 
+    return test_data_f1score
+
 
 if __name__ == "__main__":
     df_tuple = load_data(test_data_path)
