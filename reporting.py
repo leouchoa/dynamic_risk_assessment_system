@@ -14,7 +14,7 @@ import diagnostics as dgn
 
 
 def save_confusion_matrix_plot(
-    cm: np.ndarray, path_to_plot_output: str = "."
+    cm: np.ndarray, path_to_plot_output: str
 ) -> None:
     """
     Plot and save confusion matrix based on model predictions.
@@ -65,6 +65,6 @@ if __name__ == "__main__":
     model_performance_plot(
         path_to_data=path_to_data,
         path_to_model=path_to_model,
-        path_to_plot_output=".",
+        path_to_plot_output=cfg["output_model_path"],
     )
     # score_model()
