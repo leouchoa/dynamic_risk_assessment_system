@@ -19,6 +19,7 @@ app.secret_key = "1652d576-484a-49fd-913a-6879acfa6ba4"
 cfg = dgn.load_config()
 
 path_to_model = os.path.join(cfg["prod_deployment_path"], "trainedmodel.pkl")
+path_to_score = cfg["prod_deployment_path"]
 
 
 @app.route("/prediction", methods=["POST", "OPTIONS"])
@@ -54,6 +55,7 @@ def score():
     data_loc = request.args.get("data_loc")
     df_tuple = scoring.load_data(data_loc)
     f1_score = scoring.score_model(df_tuple, path_to_model)
+    scoring.save_score(path_to_score=path_to_score, score=f1_score)
 
     return f"saved f1 score of {f1_score}"
 
