@@ -29,14 +29,6 @@ logging.basicConfig(
 logger = logging.getLogger("Scoring")
 
 
-with open("config.json", "r") as f:
-    config = json.load(f)
-
-test_data_path = os.path.join(config["test_data_path"], "testdata.csv")
-
-path_to_model = os.path.join(config["output_model_path"], "trainedmodel.pkl")
-
-
 def load_data(test_data_path: str) -> Tuple[pd.DataFrame, list]:
     """
     Loads dataset, drop unused columns and return `x` dataframe and `y` labels.
@@ -87,16 +79,31 @@ def score_model(
     test_data_f1score = f1_score(y_true=y, y_pred=preds)
     logger.info("Computed f1 score")
 
-    f1score_saving_path = f"{path_to_model.split('/')[0]}/latestscore.txt"
-
-    with open(f1score_saving_path, "w+") as f:
-        f.write(f"f1_score = {str(test_data_f1score)}")
-
-    logger.info("Saved f1 score")
-
     return test_data_f1score
 
 
+def save_score(path_to_score: str, score: float) -> None:
+    """
+    Save f1 score into a file called latestscore.txt in `path_to_score`
+    """
+    f1score_saving_path = os.path.join(path_to_score, "latestscore.txt")
+
+    with open(f1score_saving_path, "w+") as f:
+        f.write(f"f1_score = {str(score)}")
+
+    logger.info("Saved f1 score")
+
+
 if __name__ == "__main__":
+    with open("config_old.json", "r") as f:
+        config = json.load(f)
+
+    test_data_path = os.path.join(config["test_data_path"], "testdata.csv")
+
+    path_to_model = os.path.join(
+        config["output_model_path"], "trainedmodel.pkl"
+    )
+    path_to_score = config["output_model_path"]
     df_tuple = load_data(test_data_path)
-    score_model(df_tuple, path_to_model)
+    current_f1_score = score_model(df_tuple, path_to_model)
+    save_score(path_to_score=path_to_score, score=current_f1_score)
