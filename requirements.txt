@@ -21,4 +21,5 @@ six==1.15.0
 scikit-learn
 threadpoolctl==2.1.0
 Werkzeug==1.0.1
+requests==2.26.0
 pre-commit
