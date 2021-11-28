@@ -1,0 +1,1 @@
+10 * * * * source dynamic_risk_assessment_system/bin/activate && python /home/dynamic_risk_assessment_system/fullprocess.py

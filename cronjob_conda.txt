@@ -1,0 +1,1 @@
+10 * * * * conda activate dynamic_risk_assessment && python /home/dynamic_risk_assessment_system/fullprocess.py
