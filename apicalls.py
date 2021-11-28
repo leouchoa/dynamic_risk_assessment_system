@@ -12,12 +12,6 @@ import os
 
 import requests
 
-with open("config.json", "r") as f:
-    config = json.load(f)
-
-# set localhost url
-URL = "http://127.0.0.1:8000/"
-
 
 def responses(URL):
     """
@@ -65,6 +59,11 @@ def save_api_responses(responses_output: list, saving_path: str) -> None:
 
 
 if __name__ == "__main__":
+    with open("config.json", "r") as f:
+        config = json.load(f)
+
+    # set localhost url
+    URL = "http://127.0.0.1:8000/"
 
     requests_res_save_path = os.path.join(
         config["output_model_path"], "apireturns.txt"
