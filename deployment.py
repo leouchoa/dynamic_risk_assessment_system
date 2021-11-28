@@ -27,8 +27,6 @@ logging.basicConfig(
 logger = logging.getLogger("Deployment")
 
 logger.info("Read config file")
-with open("config.json", "r") as f:
-    config = json.load(f)
 
 
 def make_sender_paths(config: dict) -> dict:
@@ -60,7 +58,7 @@ def make_sender_paths(config: dict) -> dict:
     return sender_dict
 
 
-def store_model_into_pickle(config: dict) -> None:
+def mk_or_update_production_dir(config: dict) -> None:
     """
     It will copy your
         - trained model (trainedmodel.pkl)
@@ -83,4 +81,7 @@ def store_model_into_pickle(config: dict) -> None:
 
 
 if __name__ == "__main__":
-    store_model_into_pickle(config)
+    with open("config.json", "r") as f:
+        config = json.load(f)
+
+    mk_or_update_production_dir(config)
