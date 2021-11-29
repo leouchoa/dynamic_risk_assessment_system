@@ -20,4 +20,21 @@ The main steps to have a sucessful monitoring of the model are:
 - Diagnostics
 - Reporting
 
-With those steps we can better assess whether our model performance.
+With those steps we can better assess our model performance.
+
+The overall high level idea of how those steps work together is depicted in figure bellow.
+
+![](fullprocess.jpg)
+
+### Diagnostics
+
+The diagnostics step is where we check if our model is suffering from [model drift](https://datatron.com/what-is-model-drift/), indicating that its perfomance is as good as it once was. Here the diagnostic is done by comparing a current [f1-score](https://deepai.org/machine-learning-glossary-and-terms/f-score) with the f1-score given by scoring the model against new data. If the new score is less (raw comparison test for now) than the current, it is considered that model drift has happened.
+
+
+### Ingestion
+
+This step ingests multiple data from a source directory and checks whether there's at least one file not already ingested. If that's the case then the data is again ingested and compiled to form a bigger dataset for next steps.
+
+### Training
+
+Model training will happen if the diagnostics step reports that has occurred
